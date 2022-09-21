@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {AppThunk, RootState} from "../store";
+import {AppThunk} from "../store";
 
 
 
@@ -42,3 +42,5 @@ export const sendMessage = ({message}: any): AppThunk => async (dispatch) => {
 
     dispatch(setChats(chats))
 }
+
+export default chatSLice.reducer;
