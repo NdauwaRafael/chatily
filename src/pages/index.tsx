@@ -1,4 +1,8 @@
 import React, { Fragment, useEffect } from "react";
+import {
+    BrowserRouter as Router
+} from "react-router-dom";
+import Routes from "../routes";
 
 const Pages = () => {
     useEffect(() => {
@@ -6,7 +10,11 @@ const Pages = () => {
     });
     return (
         <Fragment>
-
+            <div className="pages">
+                <Router>
+                    <Routes />
+                </Router>
+            </div>
         </Fragment>    
     );
 }
