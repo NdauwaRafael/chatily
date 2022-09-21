@@ -12,7 +12,6 @@ const Auth = () => {
     });
 
     const submitUsername = () => {
-        console.log("clicked")
         dispatch(sendUsername({username}));
     }
 
