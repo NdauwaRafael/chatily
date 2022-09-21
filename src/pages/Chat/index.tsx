@@ -1,15 +1,27 @@
 
-import React, { Fragment, useEffect } from "react";
+import React, { useState} from "react";
 import "../../assets/sass/chat.css";
+import {useAppDispatch} from "../../redux/hooks";
+import {sendMessage} from "../../redux/slices/chat";
+import {useSelector} from "react-redux";
 
 const Chat = () => {
+    const { chats } = useSelector(
+        (state: any) => state.chat
+    )
+    const [message, setMessage] = useState("");
+    const dispatch = useAppDispatch();
+
+    const submitMessage = () => {
+        dispatch(sendMessage({message}));
+    }
     return (
         <div className="container">
-            <div className="row">
-                <div className="col-md-8">
+            <div className="row mt-5">
+                <div className="col-md-8 col-offset-2">
                     <div className="box box-primary direct-chat direct-chat-primary">
                         <div className="box-header with-border">
-                            <h3 className="box-title">Direct Chat</h3>
+                            <h3 className="box-title">Chat Room</h3>
 
                             <div className="box-tools pull-right">
                                 <span data-toggle="tooltip" title="" className="badge bg-light-blue"
@@ -27,40 +39,37 @@ const Chat = () => {
 
                         <div className="box-body">
                             <div className="direct-chat-messages">
-                                <div className="direct-chat-msg mt-3 mb-5">
-                                    <div className="direct-chat-info clearfix">
-                                        <span className="direct-chat-name pull-left mr-2">Alexander Pierce</span>
-                                        <span className="direct-chat-timestamp pull-right">23 Jan 2:00 pm</span>
-                                    </div>
-                                    <img className="direct-chat-img" src="https://bootdey.com/img/Content/user_1.jpg"
-                                         alt="Message User Image" />
-                                        <div className="direct-chat-text">
-                                            Is this template really for free? That's unbelievable!
+                                {
+                                    chats.map((chat: any, index: any)=>(
+                                        <div key={index} className={"direct-chat-msg mt-3 mb-5 " + chat.id == sessionStorage.tabID ? ' right': ""}>
+                                            <div className="direct-chat-info clearfix">
+                                                <span className={"direct-chat-name mr-2" + chat.id == sessionStorage.tabID ? "pull-right" : " pull-left "}>{chat.username}</span>
+                                                <span className={"direct-chat-timestamp" + chat.id == sessionStorage.tabID ? "pull-left" : "pull-right"}>{chat.time}</span>
+                                            </div>
+                                            <img className="direct-chat-img" src={chat.id == sessionStorage.tabID ? "https://bootdey.com/img/Content/user_2.jpg" : "https://bootdey.com/img/Content/user_1.jpg"}
+                                                 alt="Message User Image" />
+                                            <div className="direct-chat-text">
+                                                {
+                                                    chat.message
+                                                }
+                                            </div>
                                         </div>
-                                </div>
-
-                                <div className="direct-chat-msg right mt-3 mb-5">
-                                    <div className="direct-chat-info clearfix">
-                                        <span className="direct-chat-name pull-right mr-2">Sarah Bullock</span>
-                                        <span className="direct-chat-timestamp pull-left">23 Jan 2:05 pm</span>
-                                    </div>
-
-                                    <img className="direct-chat-img" src="https://bootdey.com/img/Content/user_2.jpg"
-                                         alt="Message User Image" />
-                                        <div className="direct-chat-text">
-                                            You better believe it!
-                                        </div>
-                                </div>
+                                    ))
+                                }
                             </div>
                         </div>
 
                         <div className="box-footer">
                             <form action="#" method="post">
                                 <div className="input-group">
-                                    <input type="text" name="message" placeholder="Type Message ..."
-                                           className="form-control mr-5" />
+                                    <input type="text"
+                                           value={message}
+                                           name="message"
+                                           placeholder="Type Message ..."
+                                           className="form-control mr-5"
+                                           onChange={(e) => setMessage(e.target.value)}/>
                                       <div className="input-group-btn">
-                                        <button type="submit" className="btn btn-primary btn-flat">Send</button>
+                                        <button type="button" className="btn btn-primary btn-flat" onClick={()=> submitMessage}>Send</button>
                                       </div>
                                 </div>
                             </form>
