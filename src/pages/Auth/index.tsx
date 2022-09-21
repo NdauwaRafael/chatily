@@ -12,6 +12,7 @@ const Auth = () => {
     });
 
     const submitUsername = () => {
+        console.log("clicked")
         dispatch(sendUsername({username}));
     }
 
@@ -22,8 +23,8 @@ const Auth = () => {
                     <div className="form-group col-md-12">
                         <input type="text" className="form-control" placeholder="Enter username" onChange={(e) => setUserName(e.target.value)} />
                     </div>
-                    <div className="d-flex justify-content-center align-items-center col-md-12" onClick={()=>submitUsername}>
-                        <button type="button" className="btn btn-primary">Start Chatting</button>
+                    <div className="d-flex justify-content-center align-items-center col-md-12" >
+                        <button type="button" className="btn btn-primary" onClick={()=>submitUsername()}>Start Chatting</button>
                     </div>
                 </div>
             </div>

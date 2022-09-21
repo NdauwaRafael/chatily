@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store";
 import { v4 as uuidv4 } from 'uuid';
-import { useNavigate } from "react-router-dom";
 
 interface AuthSliceState { 
     username: string | null;
@@ -34,7 +33,6 @@ const initialState: AuthSliceState = {
 
   export const sendUsername = ({ username }: any): AppThunk => async (dispatch) => {
     try {
-      let navigate = useNavigate();
       let tabId = sessionStorage.tabID ? sessionStorage.tabID : uuidv4();
       let rawUsers: string|null = localStorage.getItem('chat-users');
       let users: any[] = rawUsers ? JSON.parse(rawUsers) : [];
@@ -49,10 +47,13 @@ const initialState: AuthSliceState = {
       dispatch(setUsername(username));
       dispatch(setTabId(tabId));
 
-      navigate("/chat");
+      // BrowserHistory.push('/chat');
 
 
     } catch (e: any) {
       console.log("An error occurred")
+      console.log(e)
     }
   };
+
+export default authSLice.reducer;

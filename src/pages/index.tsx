@@ -1,21 +1,24 @@
-import React, { Fragment, useEffect } from "react";
+import React, {  useEffect } from "react";
 import {
     BrowserRouter as Router
 } from "react-router-dom";
 import Routes from "../routes";
+import AuthProvider from "../providers/Auth";
 
 const Pages = () => {
     useEffect(() => {
         document.title = 'Welcome | Chat App';
     });
+
     return (
-        <Fragment>
             <div className="pages">
                 <Router>
-                    <Routes />
+                    <AuthProvider>
+                        <Routes />
+                    </AuthProvider>
                 </Router>
             </div>
-        </Fragment>    
+
     );
 }
 
