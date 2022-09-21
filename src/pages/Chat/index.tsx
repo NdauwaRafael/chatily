@@ -1,8 +1,8 @@
 
-import React, { useState} from "react";
+import React, {useEffect, useState} from "react";
 import "../../assets/sass/chat.css";
 import {useAppDispatch} from "../../redux/hooks";
-import {sendMessage} from "../../redux/slices/chat";
+import {sendMessage, getMessages} from "../../redux/slices/chat";
 import {useSelector} from "react-redux";
 
 const Chat = () => {
@@ -15,6 +15,14 @@ const Chat = () => {
     const submitMessage = () => {
         dispatch(sendMessage({message}));
     }
+
+    useEffect(()=>{
+        window.addEventListener('storage', () => {
+            dispatch(getMessages())
+        });
+
+    }, [dispatch]);
+
     return (
         <div className="container">
             <div className="row mt-5">
@@ -24,8 +32,7 @@ const Chat = () => {
                             <h3 className="box-title">Chat Room</h3>
 
                             <div className="box-tools pull-right">
-                                <span data-toggle="tooltip" title="" className="badge bg-light-blue"
-                                      data-original-title="3 New Messages">3</span>
+                                <span data-toggle="tooltip" title="" className="badge bg-light-blue">{chats.length}</span>
                                 <button type="button" className="btn btn-box-tool" data-widget="collapse"><i
                                     className="fa fa-minus"></i>
                                 </button>
@@ -41,10 +48,10 @@ const Chat = () => {
                             <div className="direct-chat-messages">
                                 {
                                     chats.map((chat: any, index: any)=>(
-                                        <div key={index} className={"direct-chat-msg mt-3 mb-5 " + chat.id == sessionStorage.tabID ? ' right': ""}>
+                                        <div key={index} className={"direct-chat-msg mt-3 mb-5 " + (chat.id == sessionStorage.tabID ? "right": " ")}>
                                             <div className="direct-chat-info clearfix">
-                                                <span className={"direct-chat-name mr-2" + chat.id == sessionStorage.tabID ? "pull-right" : " pull-left "}>{chat.username}</span>
-                                                <span className={"direct-chat-timestamp" + chat.id == sessionStorage.tabID ? "pull-left" : "pull-right"}>{chat.time}</span>
+                                                <span className={"direct-chat-name mr-2 " +  (chat.id == sessionStorage.tabID ? "pull-right" : " pull-left ")}>{chat.username}</span>
+                                                <span className={"direct-chat-timestamp " + (chat.id == sessionStorage.tabID ? "pull-left" : "pull-right")}>{chat.time}</span>
                                             </div>
                                             <img className="direct-chat-img" src={chat.id == sessionStorage.tabID ? "https://bootdey.com/img/Content/user_2.jpg" : "https://bootdey.com/img/Content/user_1.jpg"}
                                                  alt="Message User Image" />
@@ -69,7 +76,7 @@ const Chat = () => {
                                            className="form-control mr-5"
                                            onChange={(e) => setMessage(e.target.value)}/>
                                       <div className="input-group-btn">
-                                        <button type="button" className="btn btn-primary btn-flat" onClick={()=> submitMessage}>Send</button>
+                                        <button type="button" className="btn btn-primary btn-flat" onClick={()=> submitMessage()}>Send</button>
                                       </div>
                                 </div>
                             </form>

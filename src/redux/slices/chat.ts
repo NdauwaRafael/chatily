@@ -39,7 +39,14 @@ export const sendMessage = ({message}: any): AppThunk => async (dispatch) => {
     });
 
     localStorage.setItem('chats', JSON.stringify(chats));
+    window.dispatchEvent(new Event("storage"));
 
+    dispatch(setChats(chats))
+}
+
+export const getMessages = (): AppThunk => async (dispatch) => {
+    let rawChats = localStorage.getItem("chats");
+    let chats: any[] = rawChats ? JSON.parse(rawChats) : [];
     dispatch(setChats(chats))
 }
 

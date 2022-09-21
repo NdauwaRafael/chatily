@@ -41,19 +41,19 @@ export const checkAuthStates = (): AppThunk => async (dispatch) => {
     let users: any[] = rawUsers ? JSON.parse(rawUsers) : [];
     let tabId = sessionStorage.tabID;
     users = users.filter(user=> user.tabId = tabId);
-    console.log(tabId)
 
     if (users) {
         let user: any = users[0];
-
-        console.log(user)
         if (!user) return;
         dispatch(setUsername(user.username));
         dispatch(setTabId(user.tabID));
     }
+    else {
+        dispatch(setUsername(null));
+        dispatch(setTabId(null));
+    }
 
-    dispatch(setUsername(null));
-    dispatch(setTabId(null));
+
 };
 
 
@@ -61,6 +61,7 @@ export const sendUsername = ({username}: any): AppThunk => async (dispatch) => {
     try {
         let tabId = sessionStorage.tabID ? sessionStorage.tabID : uuidv4();
         sessionStorage.tabID = tabId;
+        sessionStorage.username = username;
 
         let rawUsers: string | null = localStorage.getItem('chat-users');
         let users: any[] = rawUsers ? JSON.parse(rawUsers) : [];
