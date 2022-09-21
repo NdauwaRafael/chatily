@@ -1,59 +1,85 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk } from "../store";
-import { v4 as uuidv4 } from 'uuid';
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {AppThunk, RootState} from "../store";
+import {v4 as uuidv4} from 'uuid';
 
-interface AuthSliceState { 
+export interface AuthSliceState {
     username: string | null;
     tabID?: string | null;
+    users?: any[];
 }
 
 const initialState: AuthSliceState = {
     username: null,
-    tabID: null
-  };
+    tabID: null,
+    users: []
+};
 
-  export const authSLice = createSlice({
+export const authSLice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-      setUsername: (state, action: PayloadAction<string | null>) => {
-        state.username = action.payload;
-      },
-      setTabId: (state, action: PayloadAction<string | null>) => {
-        state.tabID = action.payload;
-      }
+        setUsername: (state, action: PayloadAction<string | null>) => {
+            state.username = action.payload;
+        },
+        setTabId: (state, action: PayloadAction<string | null | undefined>) => {
+            state.tabID = action.payload;
+        },
+        setUsers: (state, action: PayloadAction<any[]>) => {
+            state.users = action.payload;
+        }
     },
-  });
+});
 
-  export const {
+export const {
     setUsername,
-    setTabId
-  } = authSLice.actions;
+    setTabId,
+    setUsers
+} = authSLice.actions;
+
+export const checkAuthStates = (): AppThunk => async (dispatch) => {
+    let rawUsers: string | null = localStorage.getItem('chat-users');
+    let users: any[] = rawUsers ? JSON.parse(rawUsers) : [];
+    let tabId = sessionStorage.tabID;
+    users = users.filter(user=> user.tabId = tabId);
+    console.log(tabId)
+
+    if (users) {
+        let user: any = users[0];
+
+        console.log(user)
+        if (!user) return;
+        dispatch(setUsername(user.username));
+        dispatch(setTabId(user.tabID));
+    }
+
+    dispatch(setUsername(null));
+    dispatch(setTabId(null));
+};
 
 
-  export const sendUsername = ({ username }: any): AppThunk => async (dispatch) => {
+export const sendUsername = ({username}: any): AppThunk => async (dispatch) => {
     try {
-      let tabId = sessionStorage.tabID ? sessionStorage.tabID : uuidv4();
-      let rawUsers: string|null = localStorage.getItem('chat-users');
-      let users: any[] = rawUsers ? JSON.parse(rawUsers) : [];
+        let tabId = sessionStorage.tabID ? sessionStorage.tabID : uuidv4();
+        sessionStorage.tabID = tabId;
 
-      users.push({
-        username,
-        tabId
-      });
+        let rawUsers: string | null = localStorage.getItem('chat-users');
+        let users: any[] = rawUsers ? JSON.parse(rawUsers) : [];
 
-      localStorage.setItem('chat-users', JSON.stringify(users));
+        users.push({
+            username,
+            tabId
+        });
 
-      dispatch(setUsername(username));
-      dispatch(setTabId(tabId));
+        localStorage.setItem('chat-users', JSON.stringify(users));
 
-      // BrowserHistory.push('/chat');
-
+        dispatch(setUsername(username));
+        dispatch(setTabId(tabId));
+        dispatch(setUsers(users));
 
     } catch (e: any) {
-      console.log("An error occurred")
-      console.log(e)
+        console.log("An error occurred")
+        console.log(e)
     }
-  };
+};
 
 export default authSLice.reducer;

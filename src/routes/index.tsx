@@ -4,8 +4,8 @@ import Chat from "../pages/Chat";
 
 const Routes = () => {
     return useRoutes([
-        {path: "/", element: <Auth/>},
-        {path: "chat", element: <Chat/>},
+        {path: "/", element: <Chat/>},
+        {path: "/", element: <Chat/>},
     ]);
 };
 
