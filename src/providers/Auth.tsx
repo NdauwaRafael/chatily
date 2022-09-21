@@ -9,31 +9,19 @@ const AuthProvider = ({ children }: {
     children: any
 }) => {
     const dispatch = useAppDispatch();
+
     const { username, tabId } = useSelector(
         (state: any) => state.auth
     )
-    const navigate = useNavigate();
-
-    const redirectToHome = () => {
-        if (
-            window.location.pathname !== '/'
-        ) {
-            navigate("/", { replace: true })
-        }
-    };
 
     const checkAuthState = useCallback(async () => {
         await dispatch(checkAuthStates());
     }, [dispatch])
 
 
-
     useEffect(() => {
-        if (!username) {
-            return redirectToHome();
-        }
         Defer(checkAuthState);
-    }, [username, checkAuthState]);
+    }, [username, checkAuthState, tabId]);
 
     return <>{children}</>;
 };
